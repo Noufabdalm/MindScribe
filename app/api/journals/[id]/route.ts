@@ -3,10 +3,10 @@ import { sql } from "@/lib/database";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = params.id;
+    const { id } = await params;
 
     if (!id || isNaN(Number(id))) {
       return NextResponse.json({ error: "Invalid journal ID" }, { status: 400 });
@@ -14,7 +14,8 @@ export async function GET(
 
     const journalId = parseInt(id, 10);
 
-    const result = await sql(`
+    const result = await sql(
+      `
       SELECT j.*, 
         COALESCE(json_agg(ji.image_url) FILTER (WHERE ji.image_url IS NOT NULL), '[]') AS images
       FROM journals j
@@ -22,7 +23,9 @@ export async function GET(
       WHERE j.id = $1
       GROUP BY j.id
       LIMIT 1
-    `, [journalId]);
+    `,
+      [journalId]
+    );
 
     if (!result.length) {
       return NextResponse.json({ error: "Journal not found" }, { status: 404 });
