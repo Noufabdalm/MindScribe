@@ -28,7 +28,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
           // If the stored Google ID is different, update it
           if (!existingUser[0].google_id || existingUser[0].google_id !== googleId) {
-            console.log("🔄 Updating Google ID in DB...");
             await sql`
               UPDATE users SET google_id = ${googleId} WHERE id = ${userId}
             `;
