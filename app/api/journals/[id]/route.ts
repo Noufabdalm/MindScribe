@@ -1,14 +1,15 @@
-import { sql } from "@/lib/database";
 import { NextRequest, NextResponse } from "next/server";
+import { sql } from "@/lib/database";
 
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
+// ✅ This is the correct typing format for App Router route handlers
+export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const id = parseInt(context.params.id);
-    if (isNaN(id)) {
+    const journalId = parseInt(params.id, 10);
+    if (isNaN(journalId)) {
       return NextResponse.json({ error: "Invalid journal ID" }, { status: 400 });
     }
 
-    const journal = await sql(`
+    const result = await sql(`
       SELECT j.*, 
         COALESCE(json_agg(ji.image_url) FILTER (WHERE ji.image_url IS NOT NULL), '[]') AS images
       FROM journals j
@@ -16,15 +17,15 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
       WHERE j.id = $1
       GROUP BY j.id
       LIMIT 1
-    `, [id]);
+    `, [journalId]);
 
-    if (!journal.length) {
+    if (!result.length) {
       return NextResponse.json({ error: "Journal not found" }, { status: 404 });
     }
 
-    return NextResponse.json(journal[0]);
-  } catch (err) {
-    console.error("Failed to fetch journal:", err);
+    return NextResponse.json(result[0]);
+  } catch (error) {
+    console.error("Error fetching journal:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
