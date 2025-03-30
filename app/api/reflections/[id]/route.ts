@@ -3,9 +3,9 @@ import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL!);
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
  
-    const { id } = params;
+    const { id } = await params;
 
     //Fetch from DB
     const reflection = await sql`
