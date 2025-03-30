@@ -35,7 +35,11 @@ export default function ReflectionsPage() {
 
       setReflections(data.reflections);
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }
@@ -43,7 +47,6 @@ export default function ReflectionsPage() {
 
   return (
     <div className="">
-      {/* Header */}
       <div className="p-6 top-0 z-10">
         <h2 className="text-4xl font-semibold dark:text-black">My Reflections</h2>
         <p className="mt-2 text-lg dark:text-black">
@@ -51,17 +54,14 @@ export default function ReflectionsPage() {
         </p>
       </div>
 
-      {/* Loading & Error Handling */}
       {loading && <p className="mt-4 text-gray-500 text-center">Loading reflections...</p>}
       {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
 
-      {/* Timeline */}
       <div className="px-6 flex-grow">
         <ol className="relative border-l border-gray-300 dark:border-gray-700 mt-6 mx-auto max-w-2xl">
           {reflections.length > 0 ? (
             reflections.map((reflection) => (
               <li key={reflection.id} className="mb-10 ml-6">
-                {/* Timeline Dot */}
                 <div className="absolute w-3 h-3 bg-gray-300 rounded-full mt-2 -left-[5px] border border-white dark:border-gray-900 dark:bg-gray-700"></div>
 
                 <div className="bg-indigo-50 p-5 rounded-lg shadow-md border hover:shadow-lg transition">
