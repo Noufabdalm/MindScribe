@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/database";
 
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
   try {
-    const url = new URL(req.url);
-    const id = url.pathname.split("/").pop();
+    const id = params.id;
 
     if (!id || isNaN(Number(id))) {
       return NextResponse.json({ error: "Invalid journal ID" }, { status: 400 });
