@@ -3,38 +3,43 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
   req: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  
-    const newsletterId = parseInt(context.params.id, 10);
+  const { id } = await params;
+  const newsletterId = parseInt(id, 10);
 
-    if (isNaN(newsletterId)) {
-      return NextResponse.json({ error: "Invalid newsletter ID" }, { status: 400 });
+  if (isNaN(newsletterId)) {
+    return NextResponse.json({ error: "Invalid newsletter ID" }, { status: 400 });
+  }
+
+  const { title, content, images } = await req.json();
+
+  // 1. Insert entry
+  const entryResult = await sql(
+    `
+    INSERT INTO newsletter_entries (newsletter_id, title, content)
+    VALUES ($1, $2, $3)
+    RETURNING id, title, content, created_at
+  `,
+    [newsletterId, title, content]
+  );
+
+  const entry = entryResult[0];
+
+  // 2. Insert images (if any)
+  if (images && Array.isArray(images)) {
+    for (const imageUrl of images) {
+      await sql(
+        `
+        INSERT INTO newsletter_images (newsletter_entry_id, image_url)
+        VALUES ($1, $2)
+      `,
+        [entry.id, imageUrl]
+      );
     }
+  }
 
-    const { title, content, images } = await req.json();
-
-    // 1. Insert entry
-    const entryResult = await sql(`
-      INSERT INTO newsletter_entries (newsletter_id, title, content)
-      VALUES ($1, $2, $3)
-      RETURNING id, title, content, created_at
-    `, [newsletterId, title, content]);
-
-    const entry = entryResult[0];
-
-    // 2. Insert images (if any)
-    if (images && Array.isArray(images)) {
-      for (const imageUrl of images) {
-        await sql(`
-          INSERT INTO newsletter_images (newsletter_entry_id, image_url)
-          VALUES ($1, $2)
-        `, [entry.id, imageUrl]);
-      }
-    }
-
-    return NextResponse.json({ ...entry, images }, { status: 201 });
-
+  return NextResponse.json({ ...entry, images }, { status: 201 });
 }
 
 // Fetch all entries for a newsletter
