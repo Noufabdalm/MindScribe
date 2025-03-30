@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 
-
-
 type Reflection = {
   id: string;
   title: string;
@@ -30,7 +28,11 @@ export default function ReflectionPage() {
         const data = await response.json();
         setReflection(data);
       } catch (err) {
-        setError(err.message);
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("An unexpected error occurred.");
+        }
       } finally {
         setLoading(false);
       }
@@ -50,15 +52,12 @@ export default function ReflectionPage() {
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg border border-gray-300">
-      {/* Title */}
       <h1 className="text-3xl font-bold text-gray-900">{reflection.title}</h1>
 
-      {/* Date & Emotion */}
       <p className="text-gray-500 text-sm mt-1">
         {reflection.date} - Feeling: <span className="font-semibold">{reflection.emotion}</span>
       </p>
 
-      {/* Reflection Content */}
       <p className="mt-4 text-gray-800 leading-relaxed">{reflection.content}</p>
 
       <div className="mt-6">
