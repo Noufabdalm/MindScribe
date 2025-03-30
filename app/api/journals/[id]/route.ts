@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/database";
 
-// ✅ This is the correct typing format for App Router route handlers
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest) {
   try {
-    const journalId = parseInt(params.id, 10);
-    if (isNaN(journalId)) {
+    const url = new URL(req.url);
+    const id = url.pathname.split("/").pop();
+
+    if (!id || isNaN(Number(id))) {
       return NextResponse.json({ error: "Invalid journal ID" }, { status: 400 });
     }
+
+    const journalId = parseInt(id, 10);
 
     const result = await sql(`
       SELECT j.*, 
