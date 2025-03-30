@@ -39,26 +39,30 @@ export async function POST(
 
 // Fetch all entries for a newsletter
 export async function GET(
-    req: NextRequest,
-    { params }: { params: { id: string } }
-  ) {
-   
-      const newsletterId = parseInt(params.id, 10); 
-  
-      if (isNaN(newsletterId)) {
-        return NextResponse.json({ error: "Invalid newsletter ID" }, { status: 400 });
-      }
-  
-      const entries = await sql(`
-        SELECT 
-          e.id, e.title, e.content, e.created_at,
-          COALESCE(json_agg(i.image_url) FILTER (WHERE i.image_url IS NOT NULL), '[]') AS images
-        FROM newsletter_entries e
-        LEFT JOIN newsletter_images i ON e.id = i.newsletter_entry_id
-        WHERE e.newsletter_id = $1
-        GROUP BY e.id
-        ORDER BY e.created_at ASC
-      `, [newsletterId]);
-  
-      return NextResponse.json(entries, { status: 200 });
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+
+  const newsletterId = parseInt(id, 10);
+
+  if (isNaN(newsletterId)) {
+    return NextResponse.json({ error: "Invalid newsletter ID" }, { status: 400 });
   }
+
+  const entries = await sql(
+    `
+    SELECT 
+      e.id, e.title, e.content, e.created_at,
+      COALESCE(json_agg(i.image_url) FILTER (WHERE i.image_url IS NOT NULL), '[]') AS images
+    FROM newsletter_entries e
+    LEFT JOIN newsletter_images i ON e.id = i.newsletter_entry_id
+    WHERE e.newsletter_id = $1
+    GROUP BY e.id
+    ORDER BY e.created_at ASC
+  `,
+    [newsletterId]
+  );
+
+  return NextResponse.json(entries, { status: 200 });
+}
