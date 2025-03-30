@@ -78,7 +78,12 @@ export default function FriendsNewsletterPage() {
     loadOrCreateNewsletter();
   }, [currentMonth]);
 
-  const handleSaveEntry = async (entry) => {
+  const handleSaveEntry = async (entry: {
+    title: string;
+    content: string;
+    image: string | null;
+    date: string;
+  }) => {
     if (!newsletter) return;
 
     await fetch(`/api/newsletters/${newsletter.id}/entries`, {
