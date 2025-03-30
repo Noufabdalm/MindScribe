@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 
 type Journal = {
   id: string;
   title: string;
   created_at: string;
   content: string;
-  images: string[]; 
+  images: string[];
 };
 
 export default function JournalPage() {
@@ -21,29 +23,22 @@ export default function JournalPage() {
     async function fetchJournal() {
       try {
         const response = await fetch(`/api/journals/${id}`);
-        if (!response.ok) {
-          throw new Error("Journal not found");
-        }
+        if (!response.ok) throw new Error("Journal not found");
         const data = await response.json();
         setJournal(data);
       } catch (err) {
-        setError(err.message);
+        setError((err as Error).message);
       } finally {
         setLoading(false);
       }
     }
 
-    if (id) {
-      fetchJournal();
-    }
+    if (id) fetchJournal();
   }, [id]);
 
   if (loading) return <p className="text-center text-gray-600 mt-10">Loading journal...</p>;
   if (error) return <p className="text-center text-red-600 mt-10">{error}</p>;
-
-  if (!journal) {
-    return <p className="text-center text-gray-600 mt-10">Journal not found.</p>;
-  }
+  if (!journal) return <p className="text-center text-gray-600 mt-10">Journal not found.</p>;
 
   return (
     <div className="max-w-3xl mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg border border-gray-300">
@@ -62,16 +57,24 @@ export default function JournalPage() {
       {journal.images.length > 0 && (
         <div className="mt-6 grid grid-cols-2 gap-4">
           {journal.images.map((image, index) => (
-            <img key={index} src={image} alt={`Journal Image ${index + 1}`} className="rounded-lg w-full" />
+            <div key={index} className="relative w-full h-64 rounded-lg overflow-hidden">
+              <Image
+                src={image}
+                alt={`Journal Image ${index + 1}`}
+                fill
+                className="object-cover rounded-lg"
+                sizes="(max-width: 768px) 100vw, 700px"
+              />
+            </div>
           ))}
         </div>
       )}
 
       {/* Back Button */}
       <div className="mt-6">
-        <a href="/journals" className="text-blue-500 hover:text-blue-700">
+        <Link href="/journals" className="text-blue-500 hover:text-blue-700">
           ← Back to Journals
-        </a>
+        </Link>
       </div>
     </div>
   );

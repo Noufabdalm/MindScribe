@@ -19,7 +19,7 @@ export default function Home() {
           <div className="mb-6">
             <h2 className="text-3xl font-bold text-gray-900">Quick Reflection</h2>
             <p className="text-gray-600 mt-2">
-              If you have an idea that sparked in your mind — don't let it fade. Capture it now and reflect.
+              If you have an idea that sparked in your mind — don&rsquo;t let it fade. Capture it now and reflect.
             </p>
           </div>
           <QuickReflection />

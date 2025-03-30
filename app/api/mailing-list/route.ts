@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 
 // Get all emails for the current user
 export async function GET() {
-  try {
+ 
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -16,14 +16,12 @@ export async function GET() {
 
     const emails = result.map((row) => row.email);
     return NextResponse.json(emails, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch mailing list" }, { status: 500 });
-  }
+ 
 }
 
 // Add an email
 export async function POST(req: NextRequest) {
-  try {
+  
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -41,14 +39,12 @@ export async function POST(req: NextRequest) {
     `;
 
     return NextResponse.json({ message: "Email added" }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to add email" }, { status: 500 });
-  }
+ 
 }
 
 // Remove an email
 export async function DELETE(req: NextRequest) {
-  try {
+
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -65,7 +61,4 @@ export async function DELETE(req: NextRequest) {
     `;
 
     return NextResponse.json({ message: "Email removed" }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to remove email" }, { status: 500 });
-  }
 }

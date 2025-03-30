@@ -34,7 +34,7 @@ export default function ReflectionsPage() {
       if (!res.ok) throw new Error(data.error || "Failed to fetch reflections.");
 
       setReflections(data.reflections);
-    } catch (err: any) {
+    } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);

@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  try {
+ 
     const session = await auth();
     if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -29,13 +29,11 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ message: "Journal saved successfully", journalId }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to save journal" }, { status: 500 });
-  }
+  
 }
 
-export async function GET(req: NextRequest) {
-  try {
+export async function GET() {
+  
     const session = await auth();
     if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -56,7 +54,5 @@ export async function GET(req: NextRequest) {
     `, [user_id]);
 
     return NextResponse.json(journals, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Error fetching journals" }, { status: 500 });
-  }
+    
 }

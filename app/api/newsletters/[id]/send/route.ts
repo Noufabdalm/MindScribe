@@ -7,7 +7,7 @@ export async function POST(
 ) {
   const newsletterId = params.id;
 
-  try {
+ 
     // 1. Check if newsletter exists
     const [newsletter] = await sql`
       SELECT * FROM newsletters WHERE id = ${newsletterId}
@@ -41,25 +41,9 @@ export async function POST(
       return NextResponse.json({ error: "No recipients found" }, { status: 400 });
     }
 
-    // 4. Email
-    const html = `
-      <h1>${newsletter.month} Newsletter</h1>
-      <p>Here's what happened this month !</p>
-      ${entries
-        .map(
-          (e) => `
-        <hr />
-        <h2>${e.title}</h2>
-        <p>${e.content}</p>
-        ${
-          e.images.length > 0
-            ? e.images.map((img: string) => `<img src="${img}" style="max-width: 100%; border-radius: 8px;" />`).join("")
-            : ""
-        }
-      `
-        )
-        .join("")}
-    `;
+    // 4. Email (not implemented) 
+    //logging this to be able to deploy
+    console.log(entries)
 
     // 5. Send Emails (not implemented)
     for (const email of emails) {
@@ -73,8 +57,5 @@ export async function POST(
     `;
 
     return NextResponse.json({ message: "Newsletter sent" }, { status: 200 });
-  } 
-  catch (err) {
-    return NextResponse.json({ error: "Failed to send" }, { status: 500 });
-  }
+  
 }

@@ -76,7 +76,7 @@ export default function FriendsNewsletterPage() {
     }
 
     loadOrCreateNewsletter();
-  }, []);
+  }, [currentMonth]);
 
   const handleSaveEntry = async (entry) => {
     if (!newsletter) return;

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
-// Upload image via internal route
 const uploadImageToServer = async (image: File): Promise<string | null> => {
   const formData = new FormData();
   formData.append("file", image);
@@ -18,6 +18,7 @@ const uploadImageToServer = async (image: File): Promise<string | null> => {
 
     return data.secure_url;
   } catch (error) {
+    console.error("Failed to upload:", error);
     return null;
   }
 };
@@ -34,7 +35,6 @@ interface NewsletterModalProps {
 }
 
 export default function NewsletterModal({
-  newsletterId,
   onClose,
   onSave,
 }: NewsletterModalProps) {
@@ -43,7 +43,6 @@ export default function NewsletterModal({
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Handle image upload
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setIsUploading(true);
@@ -53,31 +52,26 @@ export default function NewsletterModal({
     }
   };
 
-  
-  // Save entry
-const handleSave = () => {
-  if (!title || !content) {
-    alert("Title and content are required.");
-    return;
-  }
+  const handleSave = () => {
+    if (!title || !content) {
+      alert("Title and content are required.");
+      return;
+    }
 
-  onClose();
-  onSave({
-    title,
-    content,
-    image: imageUrl,
-    date: new Date().toISOString(),
-  });
-};
-
-  
+    onClose();
+    onSave({
+      title,
+      content,
+      image: imageUrl,
+      date: new Date().toISOString(),
+    });
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
         <h2 className="text-xl font-bold mb-4 text-gray-900">Write Newsletter Entry</h2>
 
-        {/* Title */}
         <input
           type="text"
           placeholder="Title"
@@ -86,7 +80,6 @@ const handleSave = () => {
           onChange={(e) => setTitle(e.target.value)}
         />
 
-        {/* Content */}
         <textarea
           placeholder="Write here..."
           className="w-full p-2 border border-gray-300 rounded-md mb-3"
@@ -94,21 +87,23 @@ const handleSave = () => {
           onChange={(e) => setContent(e.target.value)}
         />
 
-        {/* Image */}
         <div className="mb-4">
           <label className="block font-semibold text-left text-gray-700">Upload Image</label>
           <input type="file" accept="image/*" onChange={handleImageUpload} />
           {isUploading && <p className="text-gray-500 text-sm mt-2">Uploading...</p>}
           {imageUrl && (
-            <img
-              src={imageUrl}
-              alt="Preview"
-              className="mt-2 rounded-lg w-full max-h-40 object-cover"
-            />
+            <div className="relative mt-2 w-full h-40 rounded-lg overflow-hidden">
+              <Image
+                src={imageUrl}
+                alt="Preview"
+                fill
+                className="object-cover rounded-lg"
+                sizes="100vw"
+              />
+            </div>
           )}
         </div>
 
-        {/* Actions */}
         <div className="flex justify-end space-x-4">
           <button className="text-gray-500 hover:text-gray-700" onClick={onClose}>
             Cancel

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 type Journal = {
   id: number;
@@ -59,14 +60,21 @@ export default function JournalsPage() {
                 {/* Journal Card */}
                 <div className="bg-indigo-50 p-5 rounded-lg shadow-md border hover:shadow-lg transition">
                   {journal.images.length > 0 && (
-                    <img
-                      src={journal.images[0]}
-                      alt={journal.title}
-                      className="rounded-lg w-full h-48 object-cover"
-                    />
+                    <div className="relative w-full h-48 rounded-lg overflow-hidden">
+                      <Image
+                        src={journal.images[0]}
+                        alt={journal.title}
+                        fill
+                        className="object-cover rounded-lg"
+                        sizes="(max-width: 768px) 100vw, 700px"
+                      />
+                    </div>
                   )}
 
-                  <time dateTime={journal.created_at} className="block mt-3 text-sm text-gray-500 dark:text-gray-400">
+                  <time
+                    dateTime={journal.created_at}
+                    className="block mt-3 text-sm text-gray-500 dark:text-gray-400"
+                  >
                     {new Date(journal.created_at).toLocaleDateString()}
                   </time>
 
@@ -90,11 +98,12 @@ export default function JournalsPage() {
               </li>
             ))
           ) : (
-            // Empty state using same timeline format
             <li className="mb-10 ml-6">
               <div className="absolute w-3 h-3 bg-gray-300 rounded-full mt-2 -left-[5px] border border-white dark:border-gray-900 dark:bg-gray-700"></div>
               <div className="p-5 bg-white border border-dashed border-gray-300 rounded-lg text-center">
-                <p className="text-gray-500">You haven't written any journals yet. Start capturing your journey today!</p>
+                <p className="text-gray-500">
+                  You haven&rsquo;t written any journals yet. Start capturing your journey today!
+                </p>
               </div>
             </li>
           )}

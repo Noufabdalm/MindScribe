@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 
 type NewsletterEntry = {
   id: number;
@@ -61,7 +62,6 @@ export default function NewsletterPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white rounded-lg shadow-md border border-gray-300">
-      
       <Link href="/friends-newsletter" className="text-blue-600 text-sm hover:underline mb-4 inline-block">
         ← Back to All Newsletters
       </Link>
@@ -81,19 +81,25 @@ export default function NewsletterPage() {
       <div className="mt-6 space-y-6">
         {newsletter.entries.map((entry) => (
           <div key={entry.id} className="p-5 bg-blue-50 border-l-4 border-blue-500 rounded-md">
-            <p className="text-sm text-gray-500 mb-1">{new Date(entry.created_at).toDateString()}</p>
+            <p className="text-sm text-gray-500 mb-1">
+              {new Date(entry.created_at).toDateString()}
+            </p>
             <h3 className="text-lg font-semibold text-gray-800">{entry.title}</h3>
             <p className="text-gray-700 mt-2">{entry.content}</p>
 
             {entry.images.length > 0 && (
               <div className="mt-3 grid grid-cols-2 gap-2">
                 {entry.images.map((img, i) => (
-                  <img
-                    key={i}
-                    src={img}
-                    alt={`Entry ${entry.id} Image ${i}`}
-                    className="rounded-md w-full max-h-64 object-cover"
-                  />
+                  <div key={i} className="relative w-full h-64 rounded-md overflow-hidden">
+                    <Image
+                      src={img}
+                      alt={`Entry ${entry.id} Image ${i}`}
+                      fill
+                      className="object-cover rounded-md"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority={i === 0}
+                    />
+                  </div>
                 ))}
               </div>
             )}

@@ -1,10 +1,10 @@
 import { sql } from "@/lib/database";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
 // GET all newsletters for logged-in user
-export async function GET(req: NextRequest) {
-  try {
+export async function GET() {
+ 
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -20,14 +20,11 @@ export async function GET(req: NextRequest) {
     `, [user_id]);
 
     return NextResponse.json(newsletters, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Error fetching newsletters" }, { status: 500 });
-  }
 }
 
 
-export async function POST(req: NextRequest) {
-  try {
+export async function POST() {
+  
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -55,8 +52,4 @@ export async function POST(req: NextRequest) {
     `, [user_id, month, "Draft"]);
 
     return NextResponse.json(result[0], { status: 201 });
-
-  } catch (error) {
-    return NextResponse.json({ error: "Error creating newsletter" }, { status: 500 });
-  }
 }

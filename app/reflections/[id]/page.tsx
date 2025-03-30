@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
+
+
 
 type Reflection = {
   id: string;
@@ -59,9 +62,9 @@ export default function ReflectionPage() {
       <p className="mt-4 text-gray-800 leading-relaxed">{reflection.content}</p>
 
       <div className="mt-6">
-        <a href="/reflections" className="text-blue-500 hover:text-blue-700">
+        <Link href="/reflections" className="text-blue-500 hover:text-blue-700">
           ← Back to Reflections
-        </a>
+        </Link>
       </div>
     </div>
   );

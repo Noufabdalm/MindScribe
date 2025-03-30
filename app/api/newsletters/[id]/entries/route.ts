@@ -5,7 +5,7 @@ export async function POST(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
-  try {
+  
     const newsletterId = parseInt(context.params.id, 10);
 
     if (isNaN(newsletterId)) {
@@ -34,9 +34,7 @@ export async function POST(
     }
 
     return NextResponse.json({ ...entry, images }, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to save entry" }, { status: 500 });
-  }
+
 }
 
 // Fetch all entries for a newsletter
@@ -44,7 +42,7 @@ export async function GET(
     req: NextRequest,
     { params }: { params: { id: string } }
   ) {
-    try {
+   
       const newsletterId = parseInt(params.id, 10); 
   
       if (isNaN(newsletterId)) {
@@ -63,7 +61,4 @@ export async function GET(
       `, [newsletterId]);
   
       return NextResponse.json(entries, { status: 200 });
-    } catch (error) {
-      return NextResponse.json({ error: "Failed to fetch entries" }, { status: 500 });
-    }
   }

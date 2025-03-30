@@ -37,11 +37,10 @@ export default function MailingListModal({ onClose }: MailingListModalProps) {
 
   useEffect(() => {
     const loadEmails = async () => {
-      try {
+     
         const data = await fetchMailingList();
         setEmails(data);
-      } catch (error) {
-      }
+     
     };
     loadEmails();
   }, []);

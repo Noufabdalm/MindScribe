@@ -9,7 +9,7 @@ cloudinary.config({
 });
 
 export async function POST(req: Request) {
-  try {
+ 
     const formData = await req.formData();
     const file = formData.get("file") as File;
 
@@ -32,7 +32,5 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ secure_url: result.secure_url }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
-  }
+
 }

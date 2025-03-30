@@ -6,7 +6,7 @@ const sql = neon(process.env.DATABASE_URL!);
 
 
 export async function POST(req: Request) {
-  try {
+ 
     const session = await auth(); //authenticated user session
     if (!session || !session.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -26,14 +26,11 @@ export async function POST(req: Request) {
     `;
 
     return NextResponse.json({ message: "Reflection saved successfully" }, { status: 201 });
-  } catch (error) {
-    console.error("API Error:", error);
-    return NextResponse.json({ error: "Failed to save reflection"}, { status: 500 });
-  }
+
 }
 
 export async function GET() {
-  try {
+ 
     const session = await auth();
     if (!session || !session.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -55,7 +52,5 @@ export async function GET() {
     `;
 
     return NextResponse.json({ reflections }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch reflections"}, { status: 500 });
-  }
+ 
 }

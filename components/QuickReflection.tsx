@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "next-auth/react"; 
 
 interface ReflectionEntry {
   thought: string;
@@ -30,7 +29,6 @@ const saveReflectionToDB = async (reflection: ReflectionEntry) => {
 };
 
 export function QuickReflection() {
-  const { data: session } = useSession(); 
   const [isOpen, setIsOpen] = useState(false);
   const [thought, setThought] = useState("");
   const [reflection, setReflection] = useState("");
@@ -56,8 +54,8 @@ export function QuickReflection() {
       setEmotion("");
       setIsOpen(false);
     } catch (error) {
-      alert("Failed to save reflection. Check the console for more details.");
-    } finally {
+      console.error("Failed to save reflection:", error);
+        } finally {
       setIsSaving(false);
     }
   }

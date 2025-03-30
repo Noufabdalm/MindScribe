@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
-// Cloudinary Upload
 const uploadImageToServer = async (image: File) => {
   const formData = new FormData();
   formData.append("file", image);
@@ -19,11 +19,11 @@ const uploadImageToServer = async (image: File) => {
 
     return data.secure_url;
   } catch (error) {
+    console.log(error);
     return null;
   }
 };
 
-// Daily Prompts
 const prompts = [
   "What are you grateful for today?",
   "Describe a moment that made you smile.",
@@ -49,7 +49,6 @@ export function Journal() {
     setDailyPrompt(prompts[promptIndex]);
   }, []);
 
-  // Handle Image Upload
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       setIsUploading(true);
@@ -59,34 +58,29 @@ export function Journal() {
     }
   };
 
-  // Save Journal Entry to Database
   const handleSave = async () => {
     if (!session?.user?.id) {
       alert("You must be logged in to save a journal.");
       return;
     }
-  
+
     const newEntry = {
       user_id: session.user.id,
       title: usePrompt ? dailyPrompt : title,
       content: journalEntry,
       images: imageUrls,
     };
-  
-    try {
-      const response = await fetch("/api/journals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newEntry),
-      });
-  
-      if (!response.ok) throw new Error("Failed to save journal");
-  
-      setIsOpen(false);
-    } catch (error) {
-    }
+
+    const response = await fetch("/api/journals", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newEntry),
+    });
+
+    if (!response.ok) throw new Error("Failed to save journal");
+
+    setIsOpen(false);
   };
-  
 
   return (
     <>
@@ -158,10 +152,17 @@ export function Journal() {
               <input type="file" accept="image/*" onChange={handleImageUpload} />
               {isUploading && <p className="text-gray-500 text-sm mt-2">Uploading...</p>}
 
-              {/* Show multiple images */}
               <div className="mt-2 grid grid-cols-2 gap-2">
                 {imageUrls.map((img, index) => (
-                  <img key={index} src={img} alt={`Uploaded ${index}`} className="rounded-lg w-full max-h-40" />
+                  <div key={index} className="relative w-full h-40 rounded-lg overflow-hidden">
+                    <Image
+                      src={img}
+                      alt={`Uploaded ${index}`}
+                      fill
+                      className="object-cover rounded-lg"
+                      sizes="100vw"
+                    />
+                  </div>
                 ))}
               </div>
             </div>

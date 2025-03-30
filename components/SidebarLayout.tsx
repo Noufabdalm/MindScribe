@@ -8,7 +8,6 @@ import {
   BookOpenIcon, 
   PencilSquareIcon, 
   NewspaperIcon, 
-  UserIcon, 
   ArrowRightStartOnRectangleIcon
 } from "@heroicons/react/24/outline";
 
@@ -26,8 +25,8 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
           {/* Navigation Links */}
           <nav className="mt-5 space-y-2">
             <SidebarItem href="/today" icon={CalendarIcon} label="Today" active={pathname === "/today"} />
-            <SidebarItem href="/journals" icon={BookOpenIcon} label="Journals" active={pathname === "/journals"} />
             <SidebarItem href="/reflections" icon={PencilSquareIcon} label="Reflections" active={pathname === "/reflections"} />
+            <SidebarItem href="/journals" icon={BookOpenIcon} label="Journals" active={pathname === "/journals"} />
             <SidebarItem href="/friends-newsletter" icon={NewspaperIcon} label="Friends Newsletter" active={pathname === "/friends-newsletter"} />
           </nav>
         </div>
@@ -57,7 +56,7 @@ export default function SidebarLayout({ children }: { children: React.ReactNode 
 }
 
 // Sidebar Item Component
-function SidebarItem({ href, icon: Icon, label, active }: { href: string; icon: any; label: string; active?: boolean }) {
+function SidebarItem({ href, icon: Icon, label, active }: { href: string; icon: React.ElementType; label: string; active?: boolean }) {
   return (
     <Link 
       href={href} 

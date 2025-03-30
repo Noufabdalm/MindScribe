@@ -2,7 +2,7 @@ import { sql } from "@/lib/database";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
-  try {
+
     const journalId = params.id;
 
 
@@ -24,7 +24,5 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     }
 
     return NextResponse.json(journal[0], { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ error: "Error fetching journal" }, { status: 500 });
-  }
+  
 }
